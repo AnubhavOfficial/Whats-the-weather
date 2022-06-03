@@ -1,6 +1,7 @@
 *{
   margin: 0;
   padding: 0;
+  scroll-behavior: smooth;
 }
 html{
   font-size: calc(0.75vh + 0.75vw);
@@ -8,9 +9,6 @@ html{
 }
 html::-webkit-scrollbar {
   display: none; 
-}
-body {
- scroll-behavior: smooth;
 }
 
 code {

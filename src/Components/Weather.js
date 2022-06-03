@@ -1,4 +1,4 @@
-import { makeStyles } from "@material-ui/core";
+import { Button, makeStyles, Typography } from "@material-ui/core";
 import React, { useState, useEffect } from "react";
 import WeatherImg1 from "../Assets/Images/Weather1.jpg";
 import WeatherImg2 from "../Assets/Images/Weather2.jpg";
@@ -10,11 +10,12 @@ import WeatherImg7 from "../Assets/Images/Weather7.jpg";
 import WeatherImg8 from "../Assets/Images/Weather8.jpg";
 import WeatherImg9 from "../Assets/Images/Weather9.jpg";
 import WeatherImg10 from "../Assets/Images/Weather10.jpg";
-import WeatherImg from "../Assets/Images/Weather.gif";
-import sample from "../Assets/videos/weatherVideo.mp4";
+import SearchIcon from "@material-ui/icons/Search";
+import WeatherInfo from "./WeatherInfo";
+import axios from "axios";
 const useStyles = makeStyles({
   main: {
-    background: "black",
+    background: "grey",
     height: "calc(100vh - 4rem)",
     marginTop: "4rem",
     width: "100vw",
@@ -24,35 +25,69 @@ const useStyles = makeStyles({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    flexDirection: "column",
   },
   image: {
     width: "100vw",
     height: "100vh",
   },
   search: {
-    width: "25rem",
+    width: "40rem",
     background: "black",
-    height: "2rem",
+    height: "4rem",
     fontSize: "1.5rem",
-    padding: "0.5rem",
+    padding: "0 0.5rem",
     borderRadius: "5rem",
     color: "white",
+    textAlign: "center",
     opacity: 0.7,
     "&::placeholder": {
       color: "white",
+      fontSize: "1.3rem",
     },
   },
   video: {
     height: "100vh",
     width: "100vw",
   },
+  searchDiv: {
+    display: "flex",
+    marginTop: "1rem",
+  },
+  searchBtn: {
+    width: "10rem",
+    height: "4rem",
+    borderRadius: "4rem",
+    fontSize: "1.2rem",
+    background: "black",
+    opacity: "0.7",
+    color: "white",
+    marginLeft: "1rem",
+    padding: "0 1.5rem",
+    justifyContent: "space-between",
+    "&:hover": {
+      background: "black",
+      opacity: "0.57",
+      transform: "scale(1.1)",
+    },
+  },
+  searchText: {
+    color: "lightgrey",
+    fontFamily: "Arizonia,cursive",
+    fontSize: "3.5rem",
+  },
 });
 
 const Weather = () => {
   const classes = useStyles();
-
+  const [show, setShow] = useState(false);
   const [image, setImage] = useState(WeatherImg1);
   const [num, setNum] = useState(0);
+  const [searchValue, setSearchValue] = useState("");
+  const [aqi, setAqi] = useState("yes");
+  const [days, setDays] = useState(4);
+  const [data, setData] = useState({});
+
   useEffect(() => {
     const interval = setInterval(() => {
       const images = [
@@ -68,31 +103,65 @@ const Weather = () => {
         WeatherImg10,
       ];
       if (num === 9) {
-        console.log("In IF");
         setNum(0);
       } else {
         setNum(num + 1);
       }
-      console.log(num);
+
       setImage(images[num]);
     }, 2500);
     return () => clearInterval(interval);
   }, [num]);
+
+  const scrollSearch = () => {
+    const element = document.getElementById("weatherInfo");
+    element.scrollIntoView(false);
+  };
+  const nothing = () => {};
+  const Search = async () => {
+    show ? scrollSearch() : nothing();
+    const res = await axios.post(
+      `http://api.weatherapi.com/v1/forecast.json?key=70d0f860d8d74f5e8ff115741222205&q=${searchValue}&days=${days}&aqi=${aqi}&alerts=no`
+    );
+    setData(res.data);
+
+    setShow(true);
+  };
+
+  const searchChange = () => {
+    const value = document.getElementById("searchbar").value;
+    setSearchValue(value);
+  };
   return (
     <>
-      {/* <video className={classes.video} autoPlay loop muted>
-        <source src={sample} type="video/mp4" />
-      </video> */}
       <div
+        id="home"
         style={{ backgroundImage: `url(${image})` }}
         className={classes.main}
       >
-        <input
-          type="text"
-          placeholder="Enter your location"
-          className={classes.search}
-        />
+        <Typography className={classes.searchText}>
+          Please enter your <b style={{ color: "yellow" }}>Location</b>{" "}
+          here.....
+        </Typography>
+        <div className={classes.searchDiv}>
+          <input
+            id="searchbar"
+            type="text"
+            placeholder="Example: city name, zipcode or latitude/longitude (decimal degree)"
+            className={classes.search}
+            onChange={searchChange}
+            onKeyPress={(event) => {
+              if (event.key === "Enter") {
+                Search();
+              }
+            }}
+          />
+          <Button className={classes.searchBtn} onClick={Search}>
+            Search <SearchIcon />
+          </Button>
+        </div>
       </div>
+      <WeatherInfo show={show} data={data} />
     </>
   );
 };

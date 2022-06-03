@@ -23,6 +23,8 @@ const useStyles = makeStyles({
     color: "white",
     justifyContent: "space-between",
     alignItems: "center",
+    fontFamily: "Arizonia,cursive",
+    cursor: "pointer",
   },
   toolbar: {
     justifyContent: "space-between",
@@ -30,40 +32,59 @@ const useStyles = makeStyles({
   btn: {
     color: "white",
     marginRight: "1.5rem",
+    fontSize: "1rem",
+    fontFamily: "Arizonia,cursive",
+    textDecoration: "none",
   },
   gif: {
-    height: "3rem",
-    width: "3rem",
-    marginRight: "0.5rem",
-    // borderRadius: "50%",
-    // background: "yellow",
-    // color: "yellow",
+    height: "2.5rem",
+    width: "2.5rem",
+    marginRiht: "0.5rem",
+  },
+  btnIcon: {
+    marginRight: "0.3rem",
+  },
+  text: {
+    fontFamily: "Arizonia,cursive",
+    fontSize: "1.3rem",
   },
 });
 
 const Header = () => {
   const classes = useStyles();
 
+  const reload = () => {
+    window.location.reload();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+  const scroll = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
   return (
     <>
       <AppBar className={classes.appbar}>
         <Toolbar className={classes.toolbar}>
-          <div>
-            <a href="http://localhost:3000/" className={classes.weather}>
-              {/* <NightsStay /> */}
-              <img src={WeatherLogo} alt="" className={classes.gif} />
-              <Typography variant="h6">Whats the Weather?</Typography>
-            </a>
+          <div onClick={reload} className={classes.weather}>
+            <img src={WeatherLogo} alt="" className={classes.gif} />
+            <Typography className={classes.text}>Whats the Weather?</Typography>
           </div>
           <div>
-            <Button className={classes.btn}>
-              <Home />
+            <Button className={classes.btn} onClick={scroll}>
+              <Home className={classes.btnIcon} />
               Home
             </Button>
-            <Button className={classes.btn}>
-              <Info />
-              About
-            </Button>
+            <a href="#about" alt="">
+              <Button className={classes.btn}>
+                <Info className={classes.btnIcon} />
+                About
+              </Button>
+            </a>
           </div>
         </Toolbar>
       </AppBar>
