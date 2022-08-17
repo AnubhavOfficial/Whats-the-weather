@@ -11,12 +11,16 @@ import WeatherImg8 from "../Assets/Images/Weather8.jpg";
 import WeatherImg9 from "../Assets/Images/Weather9.jpg";
 import WeatherImg10 from "../Assets/Images/Weather10.jpg";
 import SearchIcon from "@material-ui/icons/Search";
-import WeatherInfo from "./WeatherInfo";
 import axios from "axios";
+import { showAction } from "../Actions";
+import { useDispatch, useSelector } from "react-redux";
+import { getDataAction } from "./../Actions/index";
+
 const useStyles = makeStyles({
   main: {
     background: "grey",
     height: "calc(100vh - 4rem)",
+    minHeight: "calc(100vh - 4rem)",
     marginTop: "4rem",
     width: "100vw",
     // backgroundImage: `url(${interval})`,
@@ -80,14 +84,12 @@ const useStyles = makeStyles({
 
 const Weather = () => {
   const classes = useStyles();
-  const [show, setShow] = useState(false);
+  // const [show, setShow] = useState(false);
   const [image, setImage] = useState(WeatherImg1);
   const [num, setNum] = useState(0);
   const [searchValue, setSearchValue] = useState("");
-  const [aqi, setAqi] = useState("yes");
-  const [days, setDays] = useState(4);
-  const [data, setData] = useState({});
-
+  const show = useSelector((state) => state.show);
+  const dispatch = useDispatch();
   useEffect(() => {
     const interval = setInterval(() => {
       const images = [
@@ -120,12 +122,15 @@ const Weather = () => {
   const nothing = () => {};
   const Search = async () => {
     show ? scrollSearch() : nothing();
-    const res = await axios.post(
-      `http://api.weatherapi.com/v1/forecast.json?key=70d0f860d8d74f5e8ff115741222205&q=${searchValue}&days=${days}&aqi=${aqi}&alerts=no`
-    );
-    setData(res.data);
-
-    setShow(true);
+    // const res = await axios.post(
+    // `http://api.weatherapi.com/v1/forecast.json?key=70d0f860d8d74f5e8ff115741222205&q=${searchValue}&days=3&aqi=yes&alerts=no`
+    // );
+    // const res = dataJson;
+    // setData(dataJson);
+    // setData(res.data);
+    dispatch(getDataAction(searchValue));
+    dispatch(showAction(true));
+    // setShow(true);
   };
 
   const searchChange = () => {
@@ -161,7 +166,6 @@ const Weather = () => {
           </Button>
         </div>
       </div>
-      <WeatherInfo show={show} data={data} />
     </>
   );
 };

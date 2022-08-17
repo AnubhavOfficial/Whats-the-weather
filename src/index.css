@@ -2,6 +2,7 @@
   margin: 0;
   padding: 0;
   scroll-behavior: smooth;
+  cursor:default
 }
 html{
   font-size: calc(0.75vh + 0.75vw);
